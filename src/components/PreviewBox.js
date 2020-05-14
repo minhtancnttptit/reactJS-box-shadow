@@ -1,35 +1,40 @@
 import React from "react";
+import {SketchPicker} from "react-color";
 
 class PreviewBox extends React.Component {
-    state = {}
+    state = {};
 
-    componentWillReceiveProps(props) {
-        this.setState(this.props.detail);
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({'css': nextProps.cssCode});
     }
-
-    getStyle = () => {
-        let {shiftRight, shiftDown, spread, blur, opacity, inset} = this.state;
-        let result;
-        if (shiftRight === undefined)
-            result = `rgba(255, 0, 0, 0) 0px 0px 0px 0px`;
-        else
-            result = `rgba(255, 0, 0, ${opacity}) ${shiftRight}px ${shiftDown}px ${blur}px ${spread}px`;
-        if (inset === true)
-            result += ' inset';
-        return {
-            width: 200,
-            height: 200,
-            boxShadow: result
-        }
-    }
-
 
     render() {
         return (
-            <div className="ui segment">
-                <h2>Preview</h2>
-                <div className="preview-box" style={this.getStyle()}/>
-            </div>
+            <>
+                <style jsx="true">
+                    {
+                        `
+                            .abc {
+                                box-shadow: ${this.state.css};
+                                width: 200px;
+                                height: 200px;
+                                background: ${this.state.background};
+                            }
+                        `
+                    }
+                </style>
+                <div className="ui segment">
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 2fr)", gridGap: 20 }}>
+                        <div>
+                            <h2>Preview</h2>
+                            <div className="preview-box abc" />
+                        </div>
+                        <div>
+                            <SketchPicker color="ff0000" onChangeComplete={color => this.setState({'background': color.hex})} />
+                        </div>
+                    </div>
+                </div>
+            </>
         );
     }
 }
